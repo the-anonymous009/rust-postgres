@@ -336,8 +336,8 @@ pub enum ErrorPosition {
     },
 }
 
-#[derive(Debug, PartialEq)]
-enum Kind {
+#[derive(Debug, PartialEq, Clone)]
+pub enum Kind {
     Io,
     UnexpectedMessage,
     Tls,
@@ -426,6 +426,10 @@ impl Error {
     /// This is a convenience method that downcasts the cause to a `DbError` and returns its code.
     pub fn code(&self) -> Option<&SqlState> {
         self.as_db_error().map(DbError::code)
+    }
+
+    pub fn kind(&self) -> Kind {
+        self.0.kind.clone()
     }
 
     fn new(kind: Kind, cause: Option<Box<dyn error::Error + Sync + Send>>) -> Error {
